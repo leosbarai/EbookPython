@@ -30,17 +30,21 @@ def download(response, output):
 def main():
     response = request.urlopen(sys.argv[1])
     out_file = io.FileIO("saida.zip", mode="w")
-
     content_length = response.getheader('Content-Length')
-    if content_length:
-        length = int(content_length)
-        download_length(response, out_file, length)
-    else:
-        download(response, out_file)
 
-    response.close()
-    out_file.close()
-    print('Finished')
+    try:
+        if content_length:
+            length = int(content_length)
+            download_length(response, out_file, length)
+        else:
+            download(response, out_file)
+    except Exception as e:
+        print("Erro durante o download do arquivo {}".format(sys.argv[1]))
+    finally:
+        response.close()
+        out_file.close()
+
+    print('Fim')
 
 
 if __name__ == '__main__':
