@@ -1,3 +1,6 @@
+import unittest
+
+
 class DataTable:
     """ Representa uma Tabela de dados.
 
@@ -94,13 +97,8 @@ class Column:
         self._kind = kind
         self._description = description
 
-    def __str__(self):
-        _str = "Col: {} : {} {}".format(self._name,
-                                        self._kind,
-                                        self._description)
-        return _str
-
-    def _validate(kind, data):
+    @staticmethod
+    def validate(kind, data):
         if kind == 'bigint':
             if isinstance(data, int):
                 return True
@@ -116,7 +114,26 @@ class Column:
                 return False
             return True
 
-    validate = staticmethod(_validate)
+    
+class ColumnTest(unittest.TestCase):
+    def test_validate_bigint(self):
+        self.assertTrue(Column.validate('bigint', 100))
+        self.assertTrue(not Column.validate('bigint', 10.1))
+        self.assertTrue(not Column.validate('bigint', 'Texto'))
+
+    def test_validate_numeric(self):
+        self.assertTrue(Column.validate('numeric', 10.1))
+        self.assertTrue(Column.validate('numeric', 100))
+        self.assertTrue(not Column.validate('numeric', 'Texto'))
+
+    def test_validate_varchar(self):
+        self.assertTrue(Column.validate('varchar', 'Texto'))
+        self.assertTrue(not Column.validate('varchar', 100))
+        self.assertTrue(not Column.validate('varchar', 10.1))
+
+
+if __name__ == "__main__":
+    unittest.main()
 
 
 class PrimaryKey(Column):
